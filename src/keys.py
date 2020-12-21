@@ -1,14 +1,12 @@
+from Crypto.Random import get_random_bytes
 
 def get_master_key():
-    return "thisisthemasterkey"
+    return get_random_bytes(16)
 
 def get_application_key():
-    return "thisistheappkey"
+    return get_random_bytes(16)
 
 def get_key_encryption_key():
-    return "thisisthekeyencryptionkey"
+    return get_random_bytes(16)
 
-
-def encrypt(plaintext, key):
-    return plaintext + "encryptedwith" + key
 
