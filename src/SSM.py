@@ -2,6 +2,7 @@ import keys
 from Crypto.Random import get_random_bytes
 from Crypto.Cipher import AES
 from Crypto.Util.Padding import pad
+from Crypto.Protocol.KDF import PBKDF2
 
 
 application_keys = [keys.get_application_key(), keys.get_application_key()]
@@ -11,7 +12,9 @@ application_keys = [keys.get_application_key(), keys.get_application_key()]
 
 output_file = 'file_vault.bin' # Output file
 data = keys.get_key_encryption_key() # Must be a bytes object
-key = keys.get_master_key() # The key you generated
+
+MK_1_pass = "master key 1"
+key = PBKDF2(MK_1_pass, keys.get_master_key(keys.get_master_key_part_1(), keys.get_master_key_part_2()), dkLen=16)
 
 
 # Create cipher object and encrypt the data
