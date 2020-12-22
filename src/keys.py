@@ -3,13 +3,14 @@ from Crypto.Cipher import AES
 from Crypto.Util.Padding import pad
 
 def get_master_key_part_1():
-    return get_random_bytes(8)
+    return get_random_bytes(16)
 
 def get_master_key_part_2():
-    return get_random_bytes(8)
+    return get_random_bytes(16)
 
 def get_master_key(master_key_part_1, master_key_part_2):
-    return master_key_part_1 + master_key_part_2
+    # Returns XORed keys
+    return bytes(a ^ b for (a, b) in zip(master_key_part_1, master_key_part_2))
 
 def get_application_key():
     return get_random_bytes(16)
@@ -27,5 +28,3 @@ def encrypt_and_store(data, key, output_file):
     file_out.write(cipher.iv) # Write the iv to the output file (will be required for decryption)
     file_out.write(ciphered_data) # Write the varying length ciphertext to the file (this is the encrypted data)
     file_out.close()
-
-
