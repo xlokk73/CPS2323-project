@@ -4,12 +4,33 @@ from Crypto.Util.Padding import pad
 from Crypto.Hash import HMAC, SHA256, SHA512
 
 
+def get_master_key_part_1():
+    key_file = open("mkp1.bin", "rb")
+    key = key_file.read()
+    key_file.close()
+    return key
+
+
+def get_master_key_part_2():
+    key_file = open("mkp2.bin", "rb")
+    key = key_file.read()
+    key_file.close()
+    return key
+
+
+def get_key_encryption_key():
+    key_file = open("kek.bin", "rb")
+    key = key_file.read()
+    key_file.close()
+    return key
+
+
 def get_master_key(master_key_part_1, master_key_part_2):
     # Returns XORed keys
     return bytes(a ^ b for (a, b) in zip(master_key_part_1, master_key_part_2))
 
 
-def get_application_key():
+def gen_application_key():
     return get_random_bytes(16)
 
 
