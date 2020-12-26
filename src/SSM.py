@@ -14,12 +14,13 @@ MK_part_2 = b'dsjfkldsjfkldsj4'
 MK_1_pass = "master key 1"
 MK_1 = PBKDF2(MK_1_pass, get_master_key(MK_part_1, MK_part_2), dkLen=16)
 
-# Store encrypted Key Encryption Key
+# Encrypt and store the Key Encryption Key
 encrypt_and_store(MK_1, KEK, output_file)
 
 MK_2_pass = "master key 2"
 MK_2 = PBKDF2(MK_2_pass, get_master_key(MK_part_1, MK_part_2), dkLen=16)
 
+# MAC and store the Key Encryption Key
 mac_and_store(MK_2, KEK, output_file)
 
 KEK_1_pass = "kek 1"
@@ -27,6 +28,10 @@ KEK_1 = PBKDF2(KEK_1_pass, KEK, dkLen=16)
 
 # Store encrypted Application Keys
 for application_key in application_keys:
-    data = application_key  # Must be a bytes object
+    encrypt_and_store(KEK_1, application_key, output_file)
 
-    encrypt_and_store(KEK_1, data, output_file)
+
+KEK_2_pass = "kek 2"
+KEK_2 = PBKDF2(KEK_2_pass, KEK, dkLen=16)
+for application_key in application_keys:
+    mac_and_store(KEK_2, application_key, output_file)
