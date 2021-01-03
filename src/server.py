@@ -5,20 +5,23 @@ from ssl import SSLContext, PROTOCOL_TLS_SERVER
 from Crypto.Protocol.KDF import PBKDF2
 from keys import *
 import threading
+import json
+
 
 def on_new_client(connection, address):
+    login_json = connection.recv(1024)
+    login_dict = json.loads(login_json.decode())
 
-    data = connection.recv(1024)
-    print(f'Client {address} Says: {data}')
-    
-    connection.sendall(b"Hello, Welcome")
-    
-    while(1):
+    print(f'Client {address} Says: {login_dict}')
+    data = "Hello, Welcome " + login_dict["username"]
+
+    connection.sendall(data.encode())
+
+    while 1:
         data = connection.recv(1024)
         print(f'Client {address} Says: {data}')
-    
+
         connection.sendall(b'OK')
-    connection.close()
 
 
 application_keys = [gen_application_key(), gen_application_key()]
@@ -49,7 +52,6 @@ KEK_1 = PBKDF2(KEK_1_pass, KEK, dkLen=16)
 for application_key in application_keys:
     encrypt_and_store(KEK_1, application_key, output_file)
 
-
 KEK_2_pass = "kek 2"
 KEK_2 = PBKDF2(KEK_2_pass, KEK, dkLen=16)
 
@@ -64,17 +66,14 @@ port = 8443
 context = SSLContext(PROTOCOL_TLS_SERVER)
 context.load_cert_chain('cert.pem', 'key.pem')
 
-
 server = socket(AF_INET, SOCK_STREAM)
 server.bind((ip, port))
 server.listen(1)
 tls = context.wrap_socket(server, server_side=True)
 
-while (1):
+while 1:
     connection, address = tls.accept()
     print(f'Connected by {address}\n')
 
-    thread = threading.Thread(target=on_new_client,args=(connection,address))
+    thread = threading.Thread(target=on_new_client, args=(connection, address))
     thread.start()
-    
-tls.close()

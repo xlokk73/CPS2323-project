@@ -1,5 +1,5 @@
-#!/usr/bin/python3           # This is client.py file    
-
+#!/usr/bin/python3           # This is client.py file
+import json
 from socket import create_connection
 from ssl import SSLContext, PROTOCOL_TLS_CLIENT
 
@@ -14,15 +14,22 @@ client = create_connection((ip, port))
 tls = context.wrap_socket(client, server_hostname=hostname)
 print(f'Using {tls.version()}\n')
 
+login_dict = {
+    "username": input("Enter username: "),
+    "password": input("Enter password: ")
+}
 
-tls.sendall(b'Hello, world')
+login_json = json.dumps(login_dict)
+
+tls.sendall(login_json.encode())
 
 data = tls.recv(1024)
 print(f'Server says: {data}')
 
-while(1):
-    msg = input("Enter your message (: ")
+while 1:
+    msg = input("Enter your message: ")
     tls.sendall(msg.encode())
 
     data = tls.recv(1024)
     print(f'Server says: {data}')
+
