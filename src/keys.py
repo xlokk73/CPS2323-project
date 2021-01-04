@@ -1,7 +1,13 @@
+from Crypto.Protocol.KDF import PBKDF2
 from Crypto.Random import get_random_bytes
 from Crypto.Cipher import AES
 from Crypto.Util.Padding import pad
 from Crypto.Hash import HMAC, SHA256, SHA512
+
+
+def gen_master_key_part(username, password):
+    salt = b'=\xe3L6d\xc1\xb4:\x8e\xfe\x15\x04K\x07L\xd5'
+    return PBKDF2(username + password, salt, 16, count=1000000, hmac_hash_module=SHA256)
 
 
 def get_master_key_part_1():
@@ -25,7 +31,7 @@ def get_key_encryption_key():
     return key
 
 
-def get_master_key(master_key_part_1, master_key_part_2):
+def gen_master_key(master_key_part_1, master_key_part_2):
     # Returns XORed keys
     return bytes(a ^ b for (a, b) in zip(master_key_part_1, master_key_part_2))
 

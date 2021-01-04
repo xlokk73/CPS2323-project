@@ -8,20 +8,20 @@ import threading
 import json
 
 
-def on_new_client(connection, address):
-    login_json = connection.recv(1024)
+def on_new_client(connec, addr):
+    login_json = connec.recv(1024)
     login_dict = json.loads(login_json.decode())
 
-    print(f'Client {address} Says: {login_dict}')
+    print(f'Client {addr} Says: {login_dict}')
     data = "Hello, Welcome " + login_dict["username"]
 
-    connection.sendall(data.encode())
+    connec.sendall(data.encode())
 
     while 1:
-        data = connection.recv(1024)
-        print(f'Client {address} Says: {data}')
+        data = connec.recv(1024)
+        print(f'Client {addr} Says: {data}')
 
-        connection.sendall(b'OK')
+        connec.sendall(b'OK')
 
 
 application_keys = [gen_application_key(), gen_application_key()]
@@ -34,13 +34,13 @@ MK_part_1 = get_master_key_part_1()
 MK_part_2 = get_master_key_part_2()
 
 MK_1_pass = "master key 1"
-MK_1 = PBKDF2(MK_1_pass, get_master_key(MK_part_1, MK_part_2), dkLen=16)
+MK_1 = PBKDF2(MK_1_pass, gen_master_key(MK_part_1, MK_part_2), dkLen=16)
 
 # Encrypt and store the Key Encryption Key
 encrypt_and_store(MK_1, KEK, output_file)
 
 MK_2_pass = "master key 2"
-MK_2 = PBKDF2(MK_2_pass, get_master_key(MK_part_1, MK_part_2), dkLen=16)
+MK_2 = PBKDF2(MK_2_pass, gen_master_key(MK_part_1, MK_part_2), dkLen=16)
 
 # MAC and store the Key Encryption Key
 mac_and_store(MK_2, KEK, output_file)
