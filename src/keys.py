@@ -1,4 +1,4 @@
-from Crypto.Protocol.KDF import PBKDF2
+from Crypto.Protocol.KDF import PBKDF2, HKDF
 from Crypto.Random import get_random_bytes
 from Crypto.Cipher import AES
 from Crypto.Util.Padding import pad
@@ -34,6 +34,25 @@ def get_key_encryption_key():
 def gen_master_key(master_key_part_1, master_key_part_2):
     # Returns XORed keys
     return bytes(a ^ b for (a, b) in zip(master_key_part_1, master_key_part_2))
+
+
+def gen_key_encryption_key(MK1):
+    salt = b'#B\xb2\xcb\xfa\xf9hZ\x9d[\xc4>\xc9\xe8\x0bK'
+    return HKDF(MK1, 16, salt, SHA256, 1)
+
+
+def gen_master_key_1(MK):
+    salt = b';D\x8d6^\x88\xc5\x89\x86\x03\xf77\x9c2*\x1b'
+    return HKDF(MK, 16, salt, SHA256, 2)[0]
+
+
+def gen_master_key_2(MK):
+    salt = b';D\x8d6^\x88\xc5\x89\x86\x03\xf77\x9c2*\x1b'
+    return HKDF(MK, 16, salt, SHA256, 2)[1]
+
+
+def verify_master_key(MK, KEK):
+    return gen_key_encryption_key(gen_master_key_1(MK)) == KEK
 
 
 def gen_application_key():
