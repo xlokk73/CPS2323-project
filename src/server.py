@@ -8,12 +8,12 @@ import threading
 import json
 
 
-def on_new_client(connec, addr):
-    login_json = connec.recv(1024)
-    login_dict = json.loads(login_json.decode())
-
+def handle_admin(connec, addr, login_dict):
     print(f'Client {addr} Says: {login_dict}')
     data = "Hello, Welcome " + login_dict["username"]
+
+    mkp1 = gen_master_key_part(login_dict["username"], login_dict["password"])
+    print("Master Key part 1:", mkp1)
 
     connec.sendall(data.encode())
 
@@ -22,6 +22,22 @@ def on_new_client(connec, addr):
         print(f'Client {addr} Says: {data}')
 
         connec.sendall(b'OK')
+
+
+def handle_application(connection, address):
+    print("Handling Application")
+    connection.sendal(b'OK')
+
+
+def on_new_client(connection, address):
+    login_json = connection.recv(1024)
+    login_dict = json.loads(login_json.decode())
+
+    if login_dict["type"] == "admin":
+        handle_admin(connection, address, login_dict)
+
+    else:
+        handle_application(connection, address)
 
 
 application_keys = [gen_application_key(), gen_application_key()]
@@ -72,8 +88,8 @@ server.listen(1)
 tls = context.wrap_socket(server, server_side=True)
 
 while 1:
-    connection, address = tls.accept()
-    print(f'Connected by {address}\n')
+    c, addr = tls.accept()
+    print(f'Connected by {addr}\n')
 
-    thread = threading.Thread(target=on_new_client, args=(connection, address))
+    thread = threading.Thread(target=on_new_client, args=(c, addr))
     thread.start()

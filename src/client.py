@@ -15,6 +15,7 @@ tls = context.wrap_socket(client, server_hostname=hostname)
 print(f'Using {tls.version()}\n')
 
 login_dict = {
+    "type": "admin",
     "username": input("Enter username: "),
     "password": input("Enter password: ")
 }
@@ -24,7 +25,7 @@ login_json = json.dumps(login_dict)
 tls.sendall(login_json.encode())
 
 data = tls.recv(1024)
-print(f'Server says: {data}')
+print(f'Server says: {data.decode()}')
 
 while 1:
     msg = input("Enter your message: ")
