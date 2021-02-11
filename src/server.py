@@ -1,21 +1,20 @@
-#!/usr/bin/python3           # This is server.py file    
-
+#!/usr/bin/python3           # This is server.py file
 from socket import socket, AF_INET, SOCK_STREAM
 from ssl import SSLContext, PROTOCOL_TLS_SERVER
 from Crypto.Protocol.KDF import PBKDF2
 from keys import *
 import threading
 import json
+import time
+
+
+class MasterKey:
+    part_1 = False
+    part_2 = False
 
 
 def handle_admin(connec, addr, login_dict):
-    print(f'Client {addr} Says: {login_dict}')
-    data = "Hello, Welcome " + login_dict["username"]
-
-    mkp1 = gen_master_key_part(login_dict["username"], login_dict["password"])
-    print("Master Key part 1:", mkp1)
-
-    connec.sendall(data.encode())
+    connec.sendall(b'Handling admin')
 
     while 1:
         data = connec.recv(1024)
@@ -33,43 +32,61 @@ def on_new_client(connection, address):
     login_json = connection.recv(1024)
     login_dict = json.loads(login_json.decode())
 
+    # if admin
     if login_dict["type"] == "admin":
-        handle_admin(connection, address, login_dict)
+        print(f'Client {addr} Says: {login_dict}')
+        data = "Hello, Welcome " + login_dict["username"]
 
+        if not MasterKey.part_1:
+            MasterKey.part_1 = gen_master_key_part(login_dict["username"], login_dict["password"])
+            MasterKey.is_waiting = True
+
+            print("Waiting for other admin")
+            while MasterKey.is_waiting:
+                pass
+
+            handle_admin(connection, address, login_dict)
+
+        elif MasterKey.is_waiting:
+            MasterKey.part_2 = gen_master_key_part(login_dict["username"], login_dict["password"])
+            if verify_master_key(gen_master_key(MasterKey.part_1, MasterKey.part_2), KEK):
+                MasterKey.is_waiting = False
+                handle_admin(connection, address, login_dict)
+
+            exit()
+
+    # if application
     else:
         handle_application(connection, address)
-
 
 application_keys = [gen_application_key(), gen_application_key()]
 
 output_file = 'file_vault.bin'  # Output file
 open(output_file, 'w').close()  # Clear file contents
-KEK = get_key_encryption_key()  # Must be a bytes object
+# KEK = get_key_encryption_key()  # Must be a bytes object
 
-MK_part_1 = get_master_key_part_1()
-MK_part_2 = get_master_key_part_2()
+MK_part_1 = gen_master_key_part("manwel", "password1")
+MK_part_2 = gen_master_key_part("christian", "password2")
 
-MK_1_pass = "master key 1"
-MK_1 = PBKDF2(MK_1_pass, gen_master_key(MK_part_1, MK_part_2), dkLen=16)
+MK_1 = gen_master_key_1(gen_master_key(MK_part_1, MK_part_2))
+
+KEK = gen_key_encryption_key(MK_1)
 
 # Encrypt and store the Key Encryption Key
 encrypt_and_store(MK_1, KEK, output_file)
 
-MK_2_pass = "master key 2"
-MK_2 = PBKDF2(MK_2_pass, gen_master_key(MK_part_1, MK_part_2), dkLen=16)
+MK_2 = gen_master_key_2(gen_master_key(MK_part_1, MK_part_2))
 
 # MAC and store the Key Encryption Key
 mac_and_store(MK_2, KEK, output_file)
 
-KEK_1_pass = "kek 1"
-KEK_1 = PBKDF2(KEK_1_pass, KEK, dkLen=16)
+KEK_1 = PBKDF2(KEK, b"kek 1", dkLen=16)
 
 # Encrypt and store Application Keys
 for application_key in application_keys:
     encrypt_and_store(KEK_1, application_key, output_file)
 
-KEK_2_pass = "kek 2"
-KEK_2 = PBKDF2(KEK_2_pass, KEK, dkLen=16)
+KEK_2 = PBKDF2(KEK, b"kek 2", dkLen=16)
 
 # MAC and store Application Keys
 for application_key in application_keys:

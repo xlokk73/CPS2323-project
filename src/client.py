@@ -3,8 +3,7 @@ import json
 from socket import create_connection
 from ssl import SSLContext, PROTOCOL_TLS_CLIENT
 
-
-hostname='example.org'
+hostname = 'example.org'
 ip = '127.0.0.1'
 port = 8443
 context = SSLContext(PROTOCOL_TLS_CLIENT)
@@ -33,4 +32,3 @@ while 1:
 
     data = tls.recv(1024)
     print(f'Server says: {data}')
-

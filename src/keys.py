@@ -6,8 +6,7 @@ from Crypto.Hash import HMAC, SHA256, SHA512
 
 
 def gen_master_key_part(username, password):
-    salt = b'=\xe3L6d\xc1\xb4:\x8e\xfe\x15\x04K\x07L\xd5'
-    return PBKDF2(username + password, salt, 16, count=1000000, hmac_hash_module=SHA256)
+    return PBKDF2(password, username, 16, count=1000000, hmac_hash_module=SHA256)
 
 
 def get_master_key_part_1():
@@ -37,17 +36,17 @@ def gen_master_key(master_key_part_1, master_key_part_2):
 
 
 def gen_key_encryption_key(MK1):
-    salt = b'#B\xb2\xcb\xfa\xf9hZ\x9d[\xc4>\xc9\xe8\x0bK'
+    salt = b'key_encryption_key'
     return HKDF(MK1, 16, salt, SHA256, 1)
 
 
 def gen_master_key_1(MK):
-    salt = b';D\x8d6^\x88\xc5\x89\x86\x03\xf77\x9c2*\x1b'
+    salt = b'master_key_1'
     return HKDF(MK, 16, salt, SHA256, 2)[0]
 
 
 def gen_master_key_2(MK):
-    salt = b';D\x8d6^\x88\xc5\x89\x86\x03\xf77\x9c2*\x1b'
+    salt = b'master_key_2'
     return HKDF(MK, 16, salt, SHA256, 2)[1]
 
 
