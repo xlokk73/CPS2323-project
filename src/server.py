@@ -5,7 +5,6 @@ from Crypto.Protocol.KDF import PBKDF2
 from keys import *
 import threading
 import json
-import time
 
 
 class MasterKey:
@@ -20,7 +19,39 @@ def handle_admin(connec, addr, login_dict):
         data = connec.recv(1024)
         print(f'Client {addr} Says: {data}')
 
-        connec.sendall(b'OK')
+        if data == b'CHANGE_MASTER_KEY':
+            print('changing master key')
+            connec.sendall(b'changing master key')
+
+        elif data == b'ROTATE_KEY_ENCRYPTION_KEY':
+            print('rotating key encryption key')
+            connec.sendall(b'rotating key encryption key')
+
+        elif data == b'GET_APPLICATION_KEYS_INFO':
+            print('getting application keys info')
+            connec.sendall(b'getting application keys info')
+
+        elif data == b'GET_APPLICATION_KEY_INFO':
+            print('getting app info')
+            connec.sendall(b'getting app info')
+
+        elif data == b'CREATE_ APPLICATION_KEY':
+            print('creating application key')
+            connec.sendall(b'creating application key')
+
+        elif data == b'UPDATE_APPLICATION_KEY':
+            print('updating application key')
+            connec.sendall(b'updating application key')
+
+        elif data == b'UPDATE_APPLICATION_KEY_STATE':
+            print('update application key state')
+            connec.sendall(b'update application key state')
+
+        else:
+            print('Command does not exist')
+            connec.sendall(b'totally not OK')
+
+
 
 
 def handle_application(connection, address):
