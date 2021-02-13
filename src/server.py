@@ -52,8 +52,6 @@ def handle_admin(connec, addr, login_dict):
             connec.sendall(b'totally not OK')
 
 
-
-
 def handle_application(connection, address):
     print("Handling Application")
     connection.sendal(b'OK')
@@ -89,6 +87,7 @@ def on_new_client(connection, address):
     # if application
     else:
         handle_application(connection, address)
+
 
 application_keys = [gen_application_key(), gen_application_key()]
 

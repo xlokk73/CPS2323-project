@@ -1,4 +1,4 @@
-#!/usr/bin/python3           # This is client.py file
+#!/usr/bin/python3           # This is admin_client.py file
 import json
 from socket import create_connection
 from ssl import SSLContext, PROTOCOL_TLS_CLIENT
