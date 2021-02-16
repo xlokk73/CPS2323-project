@@ -54,7 +54,11 @@ def handle_admin(connec, addr, login_dict):
 
 def handle_application(connection, address):
     print("Handling Application")
-    connection.sendal(b'OK')
+    connection.sendall(b'OK')
+
+    while 1:
+        connection.recv(1024)
+        connection.sendall(b'OK')
 
 
 def on_new_client(connection, address):

@@ -1,0 +1,3 @@
+tmap <D-t> <C-W>:tabnew<CR>
+tmap <D-}> <C-W>:tabn<CR>
+  tmap <D-{> <C-W>:tabp<CR>
