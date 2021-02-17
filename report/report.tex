@@ -71,6 +71,10 @@ One way to deal with this would be to use a flag so that while admin 1 is waitin
 
 \section{Question 2}
 \section{Question 3}
+If one wants to make an SSM more secure, first option to checkout is turning it to an HSM ;). With that being said, one can opt for cheaper ways of increasing security such as supporting different ciphers, auditing operations with integrity checks, etc. However none of this provide the same security as hardware.
+\par
+Other solutions include changing the hash module to SHA512 which is more secure than SHA256.
+
 \section{Question 4}
 First and foremost, the MK should never be stored in memory. In all of its uses, the MK should be derived from both MK parts which means both admins need to be logged in. Passing the MK as a parameter should be used as a last resort as this creates a copy of the MK in memory and destroys it when the function in question exits.
 \par
