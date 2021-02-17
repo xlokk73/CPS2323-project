@@ -1,0 +1,50 @@
+\documentclass[a4paper, 12pt]{article}
+\usepackage{graphicx}
+\usepackage{listings}
+
+\setlength\parindent{24pt}
+
+\lstset{language=python,breaklines=true, frame=single}
+
+\begin{document}
+\begin{figure}
+    \centering
+    \includegraphics[width=1\textwidth]{Logo}
+\end{figure}
+
+\title{Project Report}
+\author{Manwel Bugeja}
+\date{\today}
+\maketitle
+  
+\tableofcontents
+\newpage
+
+%\section{Introduction}
+%This is an intro. \cite{lowhighlevelevents}
+%That was a citation.
+
+\section{Question 1}
+\subsection{High level method overview}
+\subsubsection{Connection}
+A Unix domain socket server and client where created in python. TLS wrappers from the SSL library were used to enable communications over a secure channel. Socket creation and wrapping is shown in listing \ref{lst:tls-sockets}
+
+\begin{lstlisting}[caption={Socket creation and TLS wrapping}\label{lst:tls-sockets}, basicstyle=\ttfamily, frame=single, language=python]
+client = create_connection((ip, port))
+tls = context.wrap_socket(client, server_hostname=hostname)
+\end{lstlisting}
+
+The server has two functions to handle the two types of applications, these being \textit{handle\_application()} and \textit{handle\_client()}.
+
+
+
+
+
+\section{Question 2}
+\section{Question 3}
+\section{Question 4}
+
+\bibliographystyle{abbrv}
+ \bibliography{references}
+
+\end{document}
