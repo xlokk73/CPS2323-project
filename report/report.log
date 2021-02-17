@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.21 (TeX Live 2020/MacPorts 2020.54632_3) (preloaded format=pdflatex 2021.2.15)  17 FEB 2021 20:25
+This is pdfTeX, Version 3.14159265-2.6-1.40.21 (TeX Live 2020/MacPorts 2020.54632_3) (preloaded format=pdflatex 2021.2.15)  17 FEB 2021 23:53
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -144,29 +144,30 @@ LaTeX Font Info:    External font `cmex10' loaded for size
 
  [1
 
-{/opt/local/var/db/texmf/fonts/map/pdftex/updmap/pdftex.map} <./Logo.jpg>] (./r
-eport.bbl
+{/opt/local/var/db/texmf/fonts/map/pdftex/updmap/pdftex.map} <./Logo.jpg>] [2] 
+[3] (./report.bbl
 
 LaTeX Warning: Empty `thebibliography' environment on input line 3.
 
-) [2] (./report.aux) ) 
+) [4] (./report.aux) ) 
 Here is how much of TeX's memory you used:
  2953 strings out of 482556
  40214 string characters out of 5952075
- 465953 words of memory out of 5000000
+ 467953 words of memory out of 5000000
  18606 multiletter control sequences out of 15000+600000
  538022 words of font info for 43 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
- 30i,6n,40p,253b,1242s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 30i,6n,40p,478b,1242s stack positions out of 5000i,500n,10000p,200000b,80000s
 </opt/local/share/texmf-texlive/fonts/type1/public/amsfon
 ts/cm/cmbx12.pfb></opt/local/share/texmf-texlive/fonts/type1/public/amsfonts/cm
-/cmr12.pfb></opt/local/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmr17
-.pfb></opt/local/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmti12.pfb>
-</opt/local/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmtt12.pfb>
-Output written on report.pdf (2 pages, 479612 bytes).
+/cmmi12.pfb></opt/local/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmr1
+2.pfb></opt/local/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmr17.pfb>
+</opt/local/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmti12.pfb></opt
+/local/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmtt12.pfb>
+Output written on report.pdf (4 pages, 496967 bytes).
 PDF statistics:
- 32 PDF objects out of 1000 (max. 8388607)
- 21 compressed objects within 1 object stream
+ 42 PDF objects out of 1000 (max. 8388607)
+ 28 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
  6 words of extra memory for PDF output out of 10000 (max. 10000000)
 

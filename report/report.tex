@@ -25,24 +25,56 @@
 %That was a citation.
 
 \section{Question 1}
-\subsection{High level method overview}
+\subsection{High level architecture overview}
 \subsubsection{Connection}
 A Unix domain socket server and client where created in python. TLS wrappers from the SSL library were used to enable communications over a secure channel. Socket creation and wrapping is shown in listing \ref{lst:tls-sockets}
+\par
+The information to be communicated is stored in a python dictionary. Before being sent, the dictionary is dumped into a string which is then transferred.
 
 \begin{lstlisting}[caption={Socket creation and TLS wrapping}\label{lst:tls-sockets}, basicstyle=\ttfamily, frame=single, language=python]
 client = create_connection((ip, port))
 tls = context.wrap_socket(client, server_hostname=hostname)
 \end{lstlisting}
 
-The server has two functions to handle the two types of applications, these being \textit{handle\_application()} and \textit{handle\_client()}.
+\subsubsection{Server}
+The server has two functions to handle the two types of applications, these being \textit{handle\_application()} and \textit{handle\_client()}. The server receives messages from the client as a json string of bytes but then transforms it to a python dictionary to be easier to parse.
+\par
+Using if statements the admin/application handler function does the required operation and sends the input back to the client.
 
+\subsubsection{Client}
+The are two types of clients to make the code simpler. An application client and an admin client. 
+They both start off with initializing the connection to the server and proceed to go through an endless while loop for continuous communication. 
 
+\subsubsection{Keys}
+Key operations are handled by a file called \textit{Keys.py}. This file includes key generation, key derivation and key verification.
+\par
+When an admin tries to log in, he is prompted for a username and a password. Using these credentials, the admin's part of the Master Key (MK) is generated. The password is used as a password for the key derivation while the username is used as a salt. This is done to prevent dictionary attacks. The \textit{PBKDF2} key derivation function was used. SHA256 was used as a hash module but could have easily been substituted with SHA512 for added security.
+\par
+The Key Encryption Key (KEK) is derived from MK1. This process is also used for admin verification since the MK in never stored in memory.
+MK verification is done as follows:
+
+\begin{enumerate}
+   \item Admin1 connects and his part of the MK is generated
+   \item Admin1 waits until the second admin connects and is verified
+   \item When Admin2 connects, his part of the MK is generted
+   \item A new KEK is generated from MK1 (which is derived from the newly generated MK)
+   \item The new KEK is compared to the original
+   \item If it is the same than both admins are the real ones
+   \item If it is incorrect than one of the admins used an incorrect user/password
+   \item Admin2 is kicked out of the system* and can try to login again
+\end{enumerate}
+
+*This was the design chosen for code simplicity. If this system was going to be deployed, this design choice would never be taken. A malicious intruder can login as admin one and deny the real admins from using the system since credentials can not be checked without both admins being logged in.
+One way to deal with this would be to use a flag so that while admin 1 is waiting to be verified, the while loop checks on the flag. Failure to verify would result in the flag being set to false result in both admins being kicked from login. Another way would be to introduce a timeout where an admin is forced to log out after $x$ amount of seconds of waiting to be verified.
 
 
 
 \section{Question 2}
 \section{Question 3}
 \section{Question 4}
+First and foremost, the MK should never be stored in memory. In all of its uses, the MK should be derived from both MK parts which means both admins need to be logged in. Passing the MK as a parameter should be used as a last resort as this creates a copy of the MK in memory and destroys it when the function in question exits.
+\par
+Unused instances of MK parts should be destroyed (set to null) to protect the MK. This also applies to keys derived from the MK although..
 
 \bibliographystyle{abbrv}
  \bibliography{references}
